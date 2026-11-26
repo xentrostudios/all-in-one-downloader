@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>All in one Downloader (by xentrostudios) | Xentro Studios</title>
+
+  <!-- Instant Theme Script to Prevent Screen Flash -->
+  <script>
+    try {
+      if (localStorage.getItem('xentro_theme') === 'dark') {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    } catch (e) {}
+  </script>
+
+  <!-- Tailwind CSS Configuration -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    if (window.tailwind) {
+      tailwind.config = {
+        darkMode: 'class'
+      };
+    }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@500;600;700;800;900&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* =====================================================================
+       SELF-CONTAINED XENTRO STUDIOS DESIGN SYSTEM (Light + Dark)
+       ===================================================================== */
+    :root {
+      --xs-brand-primary: #7701e4;
+      --xs-brand-secondary: #8609fb;
+      --xs-accent-soft: #c084fc;
+      --xs-bg: #FAFAFC;
+      --xs-surface: #FFFFFF;
+      --xs-surface-well: #F8FAFC;
+      --xs-border: rgba(226, 232, 240, 0.9);
+      --xs-border-purple: rgba(216, 180, 254, 0.75);
+      --xs-text: #0F172A;
+      --xs-text-muted: #64748B;
+      --xs-header-bg: rgba(255, 255, 255, 0.80);
+      --xs-header-border: rgba(226, 232, 240, 0.70);
+      --xs-inner-grad: linear-gradient(135deg, #F5F3FF 0%, #EEF2FF 50%, #FAF5FF 100%);
+      --xs-inner-alt: linear-gradient(135deg, #FAF5FF 0%, #F3E8FF 50%, #FAF5FF 100%);
+    }
+
+    html.dark {
+      --xs-bg: #03050c;
+      --xs-surface: #0d122e;
+      --xs-surface-well: #070a1c;
+      --xs-border: rgba(119, 1, 228, 0.38);
+      --xs-border-purple: rgba(126, 34, 206, 0.55);
+      --xs-text: #F8FAFC;
+      --xs-text-muted: #CBD5E1;
+      --xs-header-bg: rgba(7, 11, 30, 0.85);
+      --xs-header-border: rgba(88, 28, 135, 0.40);
+      --xs-inner-grad: linear-gradient(135deg, #131a42 0%, #151c4a 50%, #182054 100%);
+      --xs-inner-alt: linear-gradient(135deg, #131a42 0%, #151c4a 50%, #182054 100%);
+    }
+
+    *, *::before, *::after {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      color: var(--xs-text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow-x: hidden;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+
+    .font-mono-code {
+      font-family: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
+
+    /* Ambient Background Glow */
+    .draftr-bg {
+      background-color: #FAFAFC;
+      background-image:
+        radial-gradient(at 50% 0%, rgba(119, 1, 228, 0.10) 0px, transparent 55%),
+        radial-gradient(at 100% 20%, rgba(134, 9, 251, 0.07) 0px, transparent 40%),
+        radial-gradient(at 0% 40%, rgba(119, 1, 228, 0.05) 0px, transparent 45%);
+    }
+    html.dark .draftr-bg {
+      background-color: #03050c;
+      background-image:
+        radial-gradient(at 50% 0%, rgba(119, 1, 228, 0.22) 0px, transparent 60%),
+        radial-gradient(at 100% 20%, rgba(134, 9, 251, 0.14) 0px, transparent 45%),
+        radial-gradient(at 0% 40%, rgba(119, 1, 228, 0.12) 0px, transparent 50%);
+    }
+
+    /* Outer Wrapper Card */
+    .outer-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 4px 20px -2px rgba(119, 1, 228, 0.03), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+      border-radius: 28px;
+      transition: all 0.25s ease;
+    }
+    html.dark .outer-card {
+      background: #0d122e;
+      border: 1px solid rgba(119, 1, 228, 0.38);
+      box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.6), 0 0 22px 0 rgba(119, 1, 228, 0.18);
+    }
+    .outer-card:hover {
+      border-color: rgba(216, 180, 254, 0.9);
+      box-shadow: 0 14px 30px -4px rgba(119, 1, 228, 0.08);
+    }
+    html.dark .outer-card:hover {
+      border-color: rgba(134, 9, 251, 0.65);
+      box-shadow: 0 16px 40px -4px rgba(0, 0, 0, 0.75), 0 0 30px 2px rgba(134, 9, 251, 0.28);
+    }
+
+    /* Inner Lavender / Indigo Gradient Wells */
+    .inner-well-grad {
+      background: var(--xs-inner-grad);
+      border: 1px solid var(--xs-border-purple);
+      border-radius: 20px;
+      transition: all 0.25s ease;
+    }
+
+    .inner-well-alt {
+      background: var(--xs-inner-alt);
+      border: 1px solid var(--xs-border-purple);
+      border-radius: 20px;
+      transition: all 0.25s ease;
+    }
+
+    /* Floating Item Cards */
+    .floating-pill-card {
+      background: #FFFFFF;
+      border: 1px solid rgba(226, 232, 240, 0.9);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      border-radius: 16px;
+      transition: all 0.2s ease;
+    }
+    html.dark .floating-pill-card {
+      background: #070a1c;
+      border: 1px solid rgba(119, 1, 228, 0.35);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+    }
+    .floating-pill-card:hover {
+      border-color: #C7D2FE;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(119, 1, 228, 0.08);
+    }
+    html.dark .floating-pill-card:hover {
+      border-color: #8609fb;
+      box-shadow: 0 6px 18px rgba(134, 9, 251, 0.3);
+    }
+
+    /* Primary Brand Gradient Buttons (#7701e4 to #8609fb) with Glow */
+    .btn-gradient {
+      background: linear-gradient(135deg, #7701e4 0%, #8609fb 100%);
+      color: #ffffff;
+      border: none;
+      box-shadow: 0 4px 14px 0 rgba(119, 1, 228, 0.35);
+      transition: all 0.22s ease;
+      text-decoration: none;
+    }
+    .btn-gradient:hover {
+      background: linear-gradient(135deg, #6400c2 0%, #7701e4 100%);
+      box-shadow: 0 6px 22px 0 rgba(134, 9, 251, 0.5);
+      transform: translateY(-1px);
+    }
+
+    /* Secondary Glowing-Border Button */
+    .btn-secondary-glow {
+      background: #FFFFFF;
+      color: #0F172A;
+      border: 1px solid rgba(119, 1, 228, 0.28);
+      box-shadow: 0 4px 14px rgba(119, 1, 228, 0.08);
+      transition: all 0.22s ease;
+      text-decoration: none;
+    }
+    html.dark .btn-secondary-glow {
+      background: #070a1c;
+      color: #F8FAFC;
+      border: 1px solid rgba(134, 9, 251, 0.52);
+      box-shadow: 0 4px 18px rgba(119, 1, 228, 0.22);
+    }
+    .btn-secondary-glow:hover {
+      border-color: #8609fb;
+      color: #7701e4;
+      box-shadow: 0 6px 22px rgba(134, 9, 251, 0.28);
+      transform: translateY(-1px);
+    }
+    html.dark .btn-secondary-glow:hover {
+      border-color: #c084fc;
+      color: #c084fc;
+      box-shadow: 0 6px 24px rgba(134, 9, 251, 0.42);
+    }
+
+    /* Header & Layout Helpers */
+    .xs-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: var(--xs-header-bg);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--xs-header-border);
+      padding: 1rem 1.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+      transition: background-color 0.3s ease, border-color 0.3s ease;
+    }
+    .xs-container {
+      width: 100%;
+      max-width: 72rem;
+      margin-left: auto;
+      margin-right: auto;
+    }
+    .xs-header-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+    }
+    .xs-brand-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.875rem;
+      text-decoration: none;
+      user-select: none;
+    }
+    .xs-brand-badge {
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 14px;
+      background: #7701e4;
+      color: #ffffff;
+      font-weight: 800;
+      font-size: 1.25rem;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 10px 15px -3px rgba(147, 51, 234, 0.3);
+      transition: transform 0.3s ease;
+      flex-shrink: 0;
+    }
+    .xs-brand-link:hover .xs-brand-badge {
+      transform: scale(1.05);
+    }
+
+    /* Animated Day/Night Pill Switcher */
+    .theme-toggle-btn {
+      position: relative;
+      width: 68px;
+      height: 32px;
+      border-radius: 9999px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      box-shadow: inset 0 2px 4px rgba(0,0,0,0.15), 0 2px 6px rgba(0,0,0,0.1);
+      border: 1px solid rgba(226, 232, 240, 0.8);
+      flex-shrink: 0;
+    }
+    .theme-toggle-btn .sky-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #60a5fa 0%, #93c5fd 100%);
+      transition: opacity 0.4s ease;
+    }
+    .theme-toggle-btn .clouds {
+      position: absolute;
+      right: 4px;
+      bottom: -2px;
+      width: 32px;
+      height: 18px;
+      background: #ffffff;
+      border-radius: 12px;
+      opacity: 0.9;
+    }
+    .theme-toggle-btn .clouds::before {
+      content: '';
+      position: absolute;
+      top: -6px;
+      left: 6px;
+      width: 14px;
+      height: 14px;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+    .theme-toggle-btn .night-bg {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(180deg, #090d24 0%, #171d3d 100%);
+      opacity: 0;
+      transition: opacity 0.4s ease;
+    }
+    .theme-toggle-btn .stars {
+      position: absolute;
+      left: 8px;
+      top: 6px;
+      font-size: 8px;
+      color: #ffffff;
+      line-height: 1;
+      text-shadow: 12px 6px 0px #fff, 6px 12px 0px #fff;
+    }
+    .theme-toggle-btn .toggle-thumb {
+      position: absolute;
+      top: 3px;
+      left: 4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #fbbf24;
+      box-shadow: 0 0 8px rgba(251, 191, 36, 0.8);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease, box-shadow 0.4s ease;
+      z-index: 10;
+    }
+    html.dark .theme-toggle-btn {
+      border-color: rgba(119, 1, 228, 0.4);
+    }
+    html.dark .theme-toggle-btn .sky-bg {
+      opacity: 0;
+    }
+    html.dark .theme-toggle-btn .night-bg {
+      opacity: 1;
+    }
+    html.dark .theme-toggle-btn .toggle-thumb {
+      transform: translateX(36px);
+      background: #cbd5e1;
+      box-shadow: inset -2px -2px 0 0 #94a3b8, 0 0 8px rgba(203, 213, 225, 0.4);
+    }
+
+    /* Carousel Stage & Transitions */
+    .carousel-stage {
+      position: relative;
+      overflow: hidden;
+    }
+    .carousel-slide {
+      display: none;
+      animation: fadeSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .carousel-slide.active {
+      display: block;
+    }
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px) scale(0.99);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Authentic Extension Panel Mockup Styles */
+    .ext-shell {
+      background: #090514;
+      border: 1px solid rgba(119, 41, 158, 0.55);
+      border-radius: 18px;
+      color: #f8f5ff;
+      box-shadow: 0 18px 36px -8px rgba(3, 5, 12, 0.65), 0 0 24px rgba(119, 1, 228, 0.24);
+    }
+    .ext-card {
+      background: #110822;
+      border: 1px solid rgba(119, 41, 158, 0.42);
+      border-radius: 12px;
+    }
+    .ext-input {
+      background: #0c0618;
+      border: 1px solid rgba(119, 41, 158, 0.45);
+      border-radius: 9px;
+    }
+    .ext-grad-bar {
+      background: linear-gradient(90deg, #483396 0%, #77299e 50%, #c52b89 100%);
+    }
+
+    /* FAQ Accordion Transition */
+    .faq-answer {
+      display: none;
+    }
+    .faq-item.open .faq-answer {
+      display: block;
+    }
+    .faq-item.open .faq-chevron {
+      transform: rotate(180deg);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    html.dark ::-webkit-scrollbar-track {
+      background: #070a1c;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    html.dark ::-webkit-scrollbar-thumb {
+      background: #2b1f55;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #8609fb;
+    }
+  </style>
+</head>
+<body class="draftr-bg text-[#0F172A] dark:text-[#F8FAFC] min-h-screen flex flex-col justify-between selection:bg-[#7701e4] selection:text-white antialiased transition-colors duration-300">
+
+  <!-- ==================== HEADER ==================== -->
+  <header class="xs-header border-b border-slate-200/70 dark:border-purple-900/40 bg-white/80 dark:bg-[#070b1e]/85 backdrop-blur-md px-4 sm:px-6 py-4 sticky top-0 z-40 shadow-sm transition-colors duration-300">
+    <div class="xs-container xs-header-row max-w-6xl mx-auto flex items-center justify-between">
+
+      <!-- Brand Logo -->
+      <a href="#top" target="_self" class="xs-brand-link flex items-center gap-3.5 select-none group">
+        <div class="xs-brand-badge w-10 h-10 rounded-[14px] bg-[#7701e4] flex items-center justify-center text-white font-extrabold text-xl shadow-lg shadow-purple-600/30 group-hover:scale-105 transition duration-300">
+          X
+        </div>
+        <div class="flex flex-col">
+          <div class="flex items-center gap-1.5 leading-none">
+            <span class="text-xl font-extrabold tracking-tight text-[#0F172A] dark:text-white">Xentro</span>
+            <span class="text-xl font-extrabold tracking-tight text-[#8609fb]">Studios</span>
+          </div>
+          <span class="text-xs font-semibold text-[#64748B] dark:text-slate-400 tracking-tight mt-1">Create your own dreams</span>
+        </div>
+      </a>
+
+      <!-- Controls: Theme Toggle -->
+      <div class="flex items-center gap-3.5">
+        <button type="button" id="themeToggleBtn" onclick="toggleTheme()" class="theme-toggle-btn" title="Toggle Day/Night Mode" aria-label="Toggle Theme">
+          <div class="sky-bg"><div class="clouds"></div></div>
+          <div class="night-bg"><div class="stars">✦</div></div>
+          <div class="toggle-thumb"></div>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ==================== MAIN SINGLE-PAGE WORKSPACE ==================== -->
+  <main id="top" class="xs-container max-w-6xl w-full mx-auto px-4 pt-8 pb-12 flex-1 space-y-8">
+
+    <!-- ==================== HERO SECTION: SIMPLE OVERVIEW + BELOW BULLET POINTS ==================== -->
+    <section class="outer-card p-5 sm:p-8 relative overflow-hidden">
+      <div class="absolute -right-20 -top-20 w-72 h-72 bg-[#8609fb]/15 rounded-full blur-3xl pointer-events-none"></div>
+      <div class="absolute -left-20 -bottom-20 w-64 h-64 bg-[#7701e4]/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+
+        <!-- Left Column: Simple Hero Overview + Existing Bullet Points + Actions (6 Cols) -->
+        <div class="lg:col-span-6 space-y-5">
+          <div class="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/95 dark:bg-[#131a42] border border-purple-200/80 dark:border-purple-700/60 text-[#7701e4] dark:text-purple-300 text-xs font-bold shadow-sm">
+            <span class="w-2 h-2 rounded-full bg-[#8609fb] animate-pulse"></span>
+            ADOBE PREMIERE PRO EXTENSION
+          </div>
+
+          <div class="space-y-1.5">
+            <h1 class="text-3xl sm:text-4xl lg:text-[42px] font-black text-[#0F172A] dark:text-white tracking-tight leading-[1.12]">
+              All in one Downloader
+              <span class="block text-xl sm:text-2xl font-extrabold text-[#7701e4] dark:text-[#c084fc] mt-1">(by xentrostudios)</span>
+            </h1>
+            <p class="text-sm sm:text-base font-extrabold text-[#7701e4] dark:text-[#c084fc] pt-1">
+              Fetch, preview, trim, and import straight to your timeline.
+            </p>
+          </div>
+
+          <!-- Clean, simple hero overview (no detailed feature list here) -->
+          <p class="text-xs sm:text-sm text-[#64748B] dark:text-[#CBD5E1] leading-relaxed font-medium">
+            A docked panel for Adobe Premiere Pro that lets you bring online videos, audio, and images straight into your edit without leaving your workspace.
+          </p>
+
+          <!-- Existing Hero Bullet Points -->
+          <ul class="space-y-2 text-xs sm:text-sm font-semibold text-[#0F172A] dark:text-slate-200">
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>Download videos, audio, and images directly inside Premiere Pro</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>MP4 / MOV / WAV / MP3 support with preview &amp; section trimming</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>Batch queue (up to 10 links) &amp; instant import into Premiere Pro</span>
+            </li>
+          </ul>
+
+          <!-- Download for Windows (Scrolls to Pricing Below) + Watch Tutorial -->
+          <div class="flex flex-wrap items-center gap-3 pt-1">
+            <button type="button" id="btnHeroDownload" onclick="scrollToPricingSection()" class="btn-gradient py-3.5 px-6 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center gap-2.5 cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Download for Windows</span>
+            </button>
+
+            <a href="#tutorialSection" class="btn-secondary-glow py-3.5 px-5 rounded-2xl font-bold text-xs sm:text-sm flex items-center gap-2 cursor-pointer">
+              <svg class="w-4 h-4 text-[#7701e4] dark:text-[#c084fc] shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M8 5v14l11-7z" />
+              </svg>
+              <span>Watch Tutorial</span>
+            </a>
+          </div>
+
+          <!-- Compatibility Line -->
+          <div class="pt-1 flex flex-wrap items-center gap-1.5 text-[11px] font-bold text-[#64748B] dark:text-slate-400">
+            <span>Supported on Adobe Premiere Pro only &bull; Premiere Pro CC 2019–2026+</span>
+          </div>
+        </div>
+
+        <!-- Right Column: Clean 5-Panel Extension Carousel Only (No extra top strip) (6 Cols) -->
+        <div class="lg:col-span-6">
+          <div id="carouselContainer" class="inner-well-grad p-4 sm:p-5 space-y-3.5 shadow-sm" onmouseenter="pauseCarouselAuto()" onmouseleave="resumeCarouselAuto()">
+            <div class="flex items-center justify-between gap-2">
+              <div class="flex items-center gap-2">
+                <span class="px-2.5 py-1 rounded-full bg-white/95 dark:bg-[#0d122e] text-[10px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60 shadow-sm">
+                  Panel Preview
+                </span>
+                <span id="carouselCounterBadge" class="text-[11px] font-mono-code font-bold text-[#64748B] dark:text-slate-300">01 / 05</span>
+              </div>
+
+              <div class="flex items-center gap-1.5">
+                <button type="button" onclick="prevCarouselSlide()" aria-label="Previous Screen" class="w-7 h-7 rounded-lg bg-white/95 dark:bg-[#070a1c] border border-purple-200/80 dark:border-purple-800/70 text-slate-700 dark:text-slate-200 hover:border-[#8609fb] hover:text-[#7701e4] dark:hover:text-[#c084fc] flex items-center justify-center transition cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                </button>
+                <button type="button" onclick="nextCarouselSlide()" aria-label="Next Screen" class="w-7 h-7 rounded-lg bg-white/95 dark:bg-[#070a1c] border border-purple-200/80 dark:border-purple-800/70 text-slate-700 dark:text-slate-200 hover:border-[#8609fb] hover:text-[#7701e4] dark:hover:text-[#c084fc] flex items-center justify-center transition cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                </button>
+              </div>
+            </div>
+
+            <div class="carousel-stage">
+              <div class="carousel-slide active" data-slide="0">
+                <div class="ext-shell p-3.5 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg ext-grad-bar text-white text-[11px] font-black flex items-center justify-center shadow">X</span>
+                      <div>
+                        <div class="flex items-center gap-1.5 leading-none">
+                          <span class="text-[11px] font-extrabold text-white">All in one Downloader</span>
+                          <span class="text-[9px] text-[#c52b89] font-semibold">(by xentrostudios)</span>
+                        </div>
+                        <div class="text-[9px] text-emerald-400 font-mono-code mt-0.5 flex items-center gap-1">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>Engine Ready
+                        </div>
+                      </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-md ext-input text-[9px] font-bold text-purple-100">Folder</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 p-0.5 rounded-full ext-input text-[10px] font-extrabold">
+                    <div class="py-1 rounded-full ext-grad-bar text-white text-center shadow">Video &amp; Audio</div>
+                    <div class="py-1 text-purple-200/75 text-center">Image Search</div>
+                  </div>
+
+                  <div class="flex items-center justify-between gap-1.5">
+                    <div class="flex items-center gap-1">
+                      <span class="px-2 py-0.5 rounded-full bg-[#483396]/45 border border-[#c52b89]/70 text-[9px] font-bold text-white">Single Link + Trimmer</span>
+                      <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold text-purple-300/70">Batch Queue (10 Max)</span>
+                    </div>
+                    <div class="flex items-center gap-1 text-[8px] font-bold">
+                      <span class="px-1.5 py-0.5 rounded ext-input text-purple-200">Clear</span>
+                      <span class="px-1.5 py-0.5 rounded ext-input text-rose-300">Reset</span>
+                    </div>
+                  </div>
+
+                  <div class="ext-card p-2 space-y-1.5">
+                    <div class="flex items-center justify-between text-[8px]">
+                      <span class="font-bold text-white">Paste Video URL</span>
+                      <span class="font-mono-code text-[#c52b89]">YT &bull; IG &bull; LinkedIn &bull; FB &bull; TikTok &bull; X</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div class="flex-1 ext-input px-2 py-1 text-[9px] font-mono-code text-purple-100 truncate">https://youtu.be/3L0Ph8KV0Tk?si=27D-9mxY8cjTCp7f</div>
+                      <span class="px-2 py-1 rounded-md ext-input text-[9px] font-bold text-purple-100">Paste</span>
+                      <span class="px-2.5 py-1 rounded-md ext-grad-bar text-[9px] font-extrabold text-white">Fetch</span>
+                    </div>
+                  </div>
+
+                  <div class="ext-card p-2.5 space-y-2">
+                    <div class="flex items-center justify-between text-[8px]">
+                      <span class="px-1.5 py-0.5 rounded bg-[#483396]/55 font-mono-code font-bold text-purple-100">PREVIEW</span>
+                      <span class="font-mono-code font-bold text-[#c52b89]">Max Available: 2160p</span>
+                    </div>
+
+                    <div class="relative h-24 rounded-lg overflow-hidden border border-purple-700/40 bg-black flex items-center justify-between px-3">
+                      <div class="space-y-0.5 z-10">
+                        <div class="text-[8px] tracking-widest text-purple-200/80 font-bold">BEST OF</div>
+                        <div class="text-lg font-black leading-none bg-gradient-to-r from-amber-300 via-pink-500 to-cyan-400 bg-clip-text text-transparent">OLED</div>
+                        <div class="text-[8px] tracking-widest text-white/80 font-bold">DEMO &bull; DOLBY VISION</div>
+                        <div class="text-[10px] font-extrabold text-white pt-0.5">8K HDR <span class="text-[8px] text-cyan-300">60FPS</span></div>
+                      </div>
+                      <div class="w-24 h-20 rounded-full bg-gradient-to-tr from-fuchsia-600 via-emerald-400 to-amber-400 opacity-85 blur-[1px] flex items-center justify-center shadow-lg">
+                        <div class="w-8 h-8 rounded-full bg-black/80 border-2 border-amber-300 flex items-center justify-center">
+                          <div class="w-3 h-3 rounded-full bg-cyan-300"></div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div>
+                      <div class="text-[10px] font-extrabold text-white truncate">Best of OLED Demo HDR 8K Ultra HD Dolby Vision&trade; 60fps</div>
+                      <div class="text-[8px] text-purple-300/75 font-mono-code">8K Clarity &bull; 00:11:16</div>
+                    </div>
+
+                    <div class="py-1 rounded-lg ext-input text-center text-[9px] font-bold text-purple-100">
+                      Download for Preview
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5 text-[8px]">
+                      <div class="ext-input px-2 py-1 font-bold text-white truncate">4K Ultra HD (2160p)</div>
+                      <div class="ext-input px-2 py-1 font-bold text-white truncate">Video + Audio &bull; MP4 (H.264 + AAC)</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide" data-slide="1">
+                <div class="ext-shell p-4 space-y-3">
+                  <div class="flex items-center justify-between text-[9px] font-mono-code text-purple-300/80 border-b border-purple-900/50 pb-2">
+                    <span>8K Clarity &bull; 00:11:16</span>
+                    <span class="text-[#c52b89] font-bold">Preview &amp; Section Trimmer</span>
+                  </div>
+
+                  <div class="py-2 px-3 rounded-xl ext-input text-center text-[10px] font-extrabold text-white">
+                    Download for Preview
+                  </div>
+
+                  <div class="grid grid-cols-2 gap-2.5">
+                    <div class="space-y-1">
+                      <div class="text-[9px] font-bold text-purple-200/85">Resolution / Quality</div>
+                      <div class="ext-input px-2.5 py-2 flex items-center justify-between text-[10px] font-extrabold text-white">
+                        <span>4K Ultra HD (2160p)</span>
+                        <span class="text-purple-300">&#9662;</span>
+                      </div>
+                    </div>
+                    <div class="space-y-1">
+                      <div class="text-[9px] font-bold text-purple-200/85">Download Format</div>
+                      <div class="ext-input px-2.5 py-2 flex items-center justify-between text-[10px] font-extrabold text-white">
+                        <span class="truncate">Video + Audio &bull; MP4 (H.264 + AAC)</span>
+                        <span class="text-purple-300 ml-1">&#9662;</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="ext-card p-3 space-y-2.5">
+                    <div class="flex items-center justify-between text-[10px] font-mono-code font-bold">
+                      <span class="text-white">00:00:00 / 00:11:16</span>
+                      <span class="flex items-center gap-1.5 text-white font-sans">
+                        <span class="w-3.5 h-3.5 rounded bg-white text-[#7701e4] flex items-center justify-center text-[9px] font-black">&#10003;</span>
+                        Section Cut
+                      </span>
+                    </div>
+
+                    <div class="h-4 rounded-lg bg-[#241342] border-2 border-[#c52b89] p-0.5 flex items-center">
+                      <div class="w-full h-full rounded bg-gradient-to-r from-[#483396] via-[#77299e] to-[#c52b89] opacity-85"></div>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-2.5">
+                      <div class="space-y-1">
+                        <div class="text-[8px] font-mono-code uppercase text-purple-300/75">START (HH:MM:SS)</div>
+                        <div class="ext-input px-2.5 py-1.5 text-[10px] font-mono-code font-bold text-white">00:00:00</div>
+                      </div>
+                      <div class="space-y-1">
+                        <div class="text-[8px] font-mono-code uppercase text-purple-300/75">END (HH:MM:SS)</div>
+                        <div class="ext-input px-2.5 py-1.5 text-[10px] font-mono-code font-bold text-white">00:11:16</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="py-2.5 px-4 rounded-xl ext-grad-bar text-center text-[11px] font-extrabold text-white shadow-lg">
+                    Download &amp; Import to Bin
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide" data-slide="2">
+                <div class="ext-shell p-3.5 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg ext-grad-bar text-white text-[11px] font-black flex items-center justify-center">X</span>
+                      <div>
+                        <div class="flex items-center gap-1.5 leading-none">
+                          <span class="text-[11px] font-extrabold text-white">All in one Downloader</span>
+                          <span class="text-[9px] text-[#c52b89] font-semibold">(by xentrostudios)</span>
+                        </div>
+                        <div class="text-[9px] text-emerald-400 font-mono-code mt-0.5">&bull; Engine Ready</div>
+                      </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-md ext-input text-[9px] font-bold text-purple-100">Folder</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 p-0.5 rounded-full ext-input text-[10px] font-extrabold">
+                    <div class="py-1 rounded-full ext-grad-bar text-white text-center">Video &amp; Audio</div>
+                    <div class="py-1 text-purple-200/75 text-center">Image Search</div>
+                  </div>
+
+                  <div class="flex items-center gap-1.5">
+                    <div class="flex-1 ext-input px-2 py-1 text-[9px] font-mono-code text-purple-100 truncate">https://youtu.be/3L0Ph8KV0Tk?si=27D-9mxY8cjTCp7f</div>
+                    <span class="px-2 py-1 rounded-md ext-input text-[9px] font-bold text-purple-100">Paste</span>
+                    <span class="px-2.5 py-1 rounded-md ext-grad-bar text-[9px] font-extrabold text-white">Fetch</span>
+                  </div>
+
+                  <div class="ext-card p-2.5 space-y-2">
+                    <div class="flex items-center justify-between text-[8px]">
+                      <span class="px-1.5 py-0.5 rounded bg-[#483396]/55 font-mono-code font-bold text-purple-100">PREVIEW</span>
+                      <span class="font-mono-code font-bold text-[#c52b89]">Max Available: 2160p</span>
+                    </div>
+
+                    <div class="relative h-24 rounded-lg overflow-hidden border border-purple-700/40 bg-gradient-to-br from-[#071329] via-[#1c1038] to-[#0a1b33] flex items-center justify-around px-4">
+                      <div class="w-16 h-16 rounded-full bg-fuchsia-500/25 blur-md"></div>
+                      <div class="flex items-center gap-1 z-10">
+                        <div class="w-11 h-6 rounded-full bg-gradient-to-r from-orange-500 via-white to-orange-500 border border-black/40 shadow-md flex items-center justify-end pr-1.5">
+                          <span class="w-1.5 h-1.5 rounded-full bg-black"></span>
+                        </div>
+                        <div class="w-3 h-4 rounded-r-full bg-orange-500"></div>
+                      </div>
+                      <div class="w-14 h-14 rounded-full bg-cyan-400/20 blur-md"></div>
+                    </div>
+
+                    <div>
+                      <div class="text-[10px] font-extrabold text-white truncate">Best of OLED Demo HDR 8K Ultra HD Dolby Vision&trade; 60fps</div>
+                      <div class="text-[8px] text-purple-300/75 font-mono-code">8K Clarity &bull; 00:11:16</div>
+                    </div>
+
+                    <div class="py-1 rounded-lg ext-input text-center text-[9px] font-bold text-purple-100">
+                      Download for Preview
+                    </div>
+
+                    <div class="flex items-center justify-between text-[9px] font-mono-code text-white pt-0.5">
+                      <span>00:02:35 / 00:11:16</span>
+                      <span class="text-purple-200 font-sans font-bold">&#9744; Section Cut</span>
+                    </div>
+                    <div class="h-3 rounded bg-gradient-to-r from-[#483396] via-[#77299e] to-[#c52b89] border border-[#c52b89]"></div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide" data-slide="3">
+                <div class="ext-shell p-3.5 space-y-2">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-5 h-5 rounded-md ext-grad-bar text-white text-[10px] font-black flex items-center justify-center">X</span>
+                      <span class="text-[11px] font-extrabold text-white">All in one Downloader <span class="text-[9px] text-[#c52b89] font-normal">(by xentrostudios)</span></span>
+                    </div>
+                    <span class="px-2 py-0.5 rounded ext-input text-[8px] font-bold text-purple-100">Folder</span>
+                  </div>
+
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-1">
+                      <span class="px-2 py-0.5 rounded-full text-[9px] font-semibold text-purple-300/70">Single Link + Trimmer</span>
+                      <span class="px-2 py-0.5 rounded-full bg-[#483396]/45 border border-[#c52b89]/70 text-[9px] font-bold text-white">Batch Queue (10 Max)</span>
+                    </div>
+                    <span class="text-[8px] font-bold text-purple-200">Clear &bull; Reset</span>
+                  </div>
+
+                  <div class="ext-card p-2 space-y-1.5">
+                    <div class="flex justify-between text-[8px]">
+                      <span class="font-bold text-white">Batch URLs (1 link per line, max 10)</span>
+                      <span class="text-[#c52b89] font-bold">Paste Clipboard</span>
+                    </div>
+                    <div class="ext-input p-2 font-mono-code text-[8px] text-purple-100 space-y-0.5 leading-tight">
+                      <div class="truncate">https://youtu.be/AWBG0K--hBc?si=P710oYSK8KF_lk72</div>
+                      <div class="truncate">https://youtu.be/HV5JaIW7frM?si=CUR7NNtrbyiaFeIA</div>
+                      <div class="truncate">https://youtu.be/3L0Ph8KV0Tk?si=q_XTH-fmVvr8vJD5</div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-1.5 text-[8px]">
+                      <div class="ext-input px-2 py-1 font-bold text-white truncate">4K Ultra HD (2160p)</div>
+                      <div class="ext-input px-2 py-1 font-bold text-white truncate">Video + Audio &bull; MP4</div>
+                    </div>
+                    <div class="py-1 rounded-lg bg-[#483396]/55 text-center text-[9px] font-extrabold text-purple-200">
+                      Download All &amp; Import to Bin
+                    </div>
+                  </div>
+
+                  <div class="ext-card p-2 space-y-1.5">
+                    <div class="flex justify-between text-[9px] font-bold">
+                      <span class="text-white">[1/3] Processing link...</span>
+                      <span class="font-mono-code text-[#c52b89]">5%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full bg-[#1a0e30] overflow-hidden">
+                      <div class="h-full rounded-full ext-grad-bar" style="width: 14%;"></div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-1 text-center text-[8px] font-extrabold">
+                      <span class="py-0.5 rounded ext-input text-white">Pause</span>
+                      <span class="py-0.5 rounded ext-input text-purple-300/45">Resume</span>
+                      <span class="py-0.5 rounded bg-rose-950/60 border border-rose-500/60 text-rose-200">Stop</span>
+                    </div>
+                  </div>
+
+                  <div class="ext-card px-2.5 py-1.5 flex items-center justify-between text-[8px]">
+                    <span class="font-extrabold text-white flex items-center gap-1"><span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>DOWNLOADED &amp; READY FOR TIMELINE</span>
+                    <span class="font-mono-code text-purple-300/80">Ready to Insert</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="carousel-slide" data-slide="4">
+                <div class="ext-shell p-3.5 space-y-2.5">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-2">
+                      <span class="w-6 h-6 rounded-lg ext-grad-bar text-white text-[11px] font-black flex items-center justify-center">X</span>
+                      <div>
+                        <div class="flex items-center gap-1.5 leading-none">
+                          <span class="text-[11px] font-extrabold text-white">All in one Downloader</span>
+                          <span class="text-[9px] text-[#c52b89] font-semibold">(by xentrostudios)</span>
+                        </div>
+                        <div class="text-[9px] text-emerald-400 font-mono-code mt-0.5">&bull; Engine Ready</div>
+                      </div>
+                    </div>
+                    <span class="px-2 py-0.5 rounded-md ext-input text-[9px] font-bold text-purple-100">Folder</span>
+                  </div>
+
+                  <div class="grid grid-cols-2 p-0.5 rounded-full ext-input text-[10px] font-extrabold">
+                    <div class="py-1 text-purple-200/75 text-center">Video &amp; Audio</div>
+                    <div class="py-1 rounded-full ext-grad-bar text-white text-center shadow">Image Search</div>
+                  </div>
+
+                  <div class="ext-card p-2 space-y-1.5">
+                    <div class="flex items-center justify-between text-[8px]">
+                      <span class="font-bold text-white">Search Images on Google or Paste Image Link</span>
+                      <span class="px-1.5 py-0.5 rounded ext-input text-rose-300 font-bold">Reset</span>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                      <div class="flex-1 ext-input px-2.5 py-1 text-[10px] font-bold text-white">tiger 8k</div>
+                      <span class="px-3 py-1 rounded-md ext-grad-bar text-[9px] font-extrabold text-white">Search</span>
+                    </div>
+                  </div>
+
+                  <div class="ext-card p-2 grid grid-cols-3 gap-1.5">
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-amber-700/70 via-orange-900/70 to-black border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-amber-300">8K</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-slate-600/70 via-amber-800/60 to-slate-950 border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-cyan-200">HD</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-zinc-500/65 via-zinc-800/70 to-black border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-white">RAW</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-orange-600/70 via-red-950/75 to-black border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-amber-300">8K</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-neutral-500/70 via-neutral-800/80 to-black border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-slate-200">B&amp;W</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                    <div class="h-16 rounded-lg bg-gradient-to-br from-emerald-800/70 via-amber-700/65 to-black border border-purple-700/50 p-1.5 flex flex-col justify-between">
+                      <span class="self-end text-[8px] font-extrabold text-emerald-300">8K</span>
+                      <span class="px-1.5 py-0.5 rounded bg-black/75 text-[7px] font-mono-code font-bold text-white w-fit">1200x900 &bull; JPG</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pt-1">
+              <div id="carouselCaption" class="text-xs font-extrabold text-[#0F172A] dark:text-white truncate">
+                1. Video &amp; Audio — Single Link + Trimmer
+              </div>
+
+              <div class="flex items-center gap-1.5 shrink-0" role="tablist" aria-label="Carousel Slide Dots">
+                <button type="button" onclick="goToCarouselSlide(0)" class="carousel-dot w-6 h-2 rounded-full bg-[#7701e4] transition-all cursor-pointer" aria-label="Slide 1"></button>
+                <button type="button" onclick="goToCarouselSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-purple-300/60 dark:bg-purple-800/80 transition-all cursor-pointer" aria-label="Slide 2"></button>
+                <button type="button" onclick="goToCarouselSlide(2)" class="carousel-dot w-2 h-2 rounded-full bg-purple-300/60 dark:bg-purple-800/80 transition-all cursor-pointer" aria-label="Slide 3"></button>
+                <button type="button" onclick="goToCarouselSlide(3)" class="carousel-dot w-2 h-2 rounded-full bg-purple-300/60 dark:bg-purple-800/80 transition-all cursor-pointer" aria-label="Slide 4"></button>
+                <button type="button" onclick="goToCarouselSlide(4)" class="carousel-dot w-2 h-2 rounded-full bg-purple-300/60 dark:bg-purple-800/80 transition-all cursor-pointer" aria-label="Slide 5"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ==================== KEY FEATURES SECTION (HEADER & CARDS + VIDEO IN THIS PANEL) ==================== -->
+    <section id="keyFeaturesSection" class="outer-card p-5 sm:p-6 space-y-5">
+      <div>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+          Key Features
+        </span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-[#0F172A] dark:text-white tracking-tight mt-2">
+          Built Around Your Premiere Pro Timeline
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        <!-- Left Side: Feature Copy, Bullet List & Feature Cards (6 Cols) -->
+        <div class="lg:col-span-6 space-y-4">
+          <h3 class="text-lg sm:text-xl font-extrabold text-[#0F172A] dark:text-white">
+            Download Videos from <span class="text-[#7701e4] dark:text-[#c084fc]">Popular Websites</span>
+          </h3>
+
+          <p class="text-xs sm:text-sm text-[#64748B] dark:text-[#CBD5E1] leading-relaxed font-medium">
+            Built for fast timeline workflows in Adobe Premiere Pro: inspect thumbnails and available resolutions before downloading, preview clips with frame-accurate section trimming, queue up to 10 links or search images directly in-panel, and import ready-to-edit media with pause, resume, and stop controls.
+          </p>
+
+          <ul class="space-y-2 text-xs sm:text-sm font-bold text-[#0F172A] dark:text-slate-200">
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>Download videos, audio, and images directly inside Premiere Pro</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>MP4 / MOV / WAV / MP3 support with preview &amp; section trimming</span>
+            </li>
+            <li class="flex items-center gap-2.5">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb] shrink-0"></span>
+              <span>Batch queue (up to 10 links) &amp; instant import into Premiere Pro</span>
+            </li>
+          </ul>
+
+          <div class="inner-well-alt p-3.5 space-y-3">
+            <div class="floating-pill-card p-3.5 space-y-1">
+              <div class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#8609fb]"></span>
+                <span>Supported Platforms &amp; Image Search</span>
+              </div>
+              <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+                Fetch single links or up to 10 batch URLs at once, or search and download images directly into your project workflow.
+              </p>
+            </div>
+
+            <div class="floating-pill-card p-3.5 space-y-1">
+              <div class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-[#8609fb]"></span>
+                <span>Instant Import &amp; Timeline Ready</span>
+              </div>
+              <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+                Assets import directly into your project ready for one-click playhead insertion without leaving Adobe Premiere Pro.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Side: Panel Containing the Looping Video (6 Cols) -->
+        <div class="lg:col-span-6">
+          <div class="inner-well-grad p-3.5 sm:p-4">
+            <div class="ext-shell p-4 space-y-3">
+              <div class="flex items-center justify-between border-b border-purple-900/50 pb-2">
+                <div class="flex items-center gap-2">
+                  <span class="w-6 h-6 rounded-lg ext-grad-bar text-white text-[11px] font-black flex items-center justify-center shadow">X</span>
+                  <span class="text-xs font-extrabold text-white">All in one Downloader</span>
+                </div>
+                <span class="text-[9px] font-mono-code font-bold text-emerald-400">Engine Ready</span>
+              </div>
+
+              <!-- Looping Video Slot Inside This Panel -->
+              <div class="ext-card p-2 space-y-2">
+                <div class="relative w-full aspect-video rounded-xl overflow-hidden bg-[#070311] border border-purple-700/45 flex items-center justify-center">
+                  <video id="panelLoopVideo" class="w-full h-full object-cover" autoplay loop muted playsinline controls poster="">
+                  </video>
+
+                  <div id="panelVideoOverlay" class="w-full h-full p-3 flex flex-col justify-between bg-gradient-to-br from-[#120726] via-[#0b0517] to-[#190933]">
+                    <div class="space-y-1">
+                      <div class="text-[9px] font-bold text-purple-200/85">Paste Video URL</div>
+                      <div class="ext-input px-2.5 py-1.5 text-[9px] font-mono-code text-purple-100 truncate">
+                        https://youtube.com/watch?v=xentro-timeline-demo
+                      </div>
+                    </div>
+
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <button type="button" onclick="simulatePanelDemoPlay()" class="px-3 py-1 rounded-lg ext-grad-bar text-[9px] font-extrabold text-white shadow cursor-pointer">
+                        Download
+                      </button>
+                      <span class="px-2.5 py-1 rounded-lg ext-input text-[9px] font-bold text-purple-100">
+                        Pause / Resume / Stop
+                      </span>
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-1.5 text-[9px] font-mono-code">
+                      <div class="ext-input px-2.5 py-1 font-bold text-white truncate">MP4 / MOV / WAV / MP3</div>
+                      <div class="ext-input px-2.5 py-1 font-bold text-[#c52b89] truncate">Up to 4K (2160p)</div>
+                    </div>
+
+                    <div class="ext-card px-2.5 py-1.5 flex items-center justify-between gap-2">
+                      <span id="panelDemoStatusText" class="text-[9px] font-mono-code font-bold text-emerald-400 truncate">
+                        &#10003; Ready for Timeline Insert
+                      </span>
+                      <button type="button" onclick="showToast('Inserted into Premiere Pro timeline')" class="px-2.5 py-0.5 rounded-md ext-grad-bar text-[9px] font-extrabold text-white cursor-pointer shrink-0">
+                        Insert
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== SETUP STEPS ==================== -->
+    <section class="outer-card p-5 sm:p-6 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+            Quick Setup Guide
+          </span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-[#0F172A] dark:text-white tracking-tight mt-2">
+            How to Download &amp; Install
+          </h2>
+        </div>
+        <span class="text-xs font-semibold text-[#64748B] dark:text-slate-400">
+          3 steps from download to your Premiere Pro timeline
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <!-- Step 1 Visual -->
+        <div class="inner-well-grad p-4 sm:p-5 flex flex-col justify-between gap-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-white/95 dark:bg-[#0d122e] text-[11px] font-extrabold uppercase tracking-wider text-purple-800 dark:text-purple-300 border border-purple-200/70 dark:border-purple-700/60 shadow-sm">Step 1</span>
+            <span class="w-8 h-8 rounded-xl btn-gradient flex items-center justify-center text-xs font-mono-code font-extrabold">01</span>
+          </div>
+          <div class="floating-pill-card p-3.5 flex items-center justify-center">
+            <button type="button" onclick="scrollToPricingSection()" class="btn-gradient py-3 px-5 rounded-xl font-extrabold text-xs flex items-center justify-center gap-2 w-full cursor-pointer">
+              <svg class="w-4 h-4 shrink-0" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              <span>Download for Windows</span>
+            </button>
+          </div>
+          <div class="floating-pill-card p-4 space-y-1.5 flex-1">
+            <h3 class="text-sm font-extrabold text-[#0F172A] dark:text-white">Download Installer</h3>
+            <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+              Click <strong>Download for Windows</strong> above to jump to the plans below and get the setup installer.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 2 Visual -->
+        <div class="inner-well-alt p-4 sm:p-5 flex flex-col justify-between gap-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-white/95 dark:bg-[#0d122e] text-[11px] font-extrabold uppercase tracking-wider text-purple-800 dark:text-purple-300 border border-purple-200/70 dark:border-purple-700/60 shadow-sm">Step 2</span>
+            <span class="w-8 h-8 rounded-xl btn-gradient flex items-center justify-center text-xs font-mono-code font-extrabold">02</span>
+          </div>
+          <div class="floating-pill-card p-3 space-y-2 text-left">
+            <div class="flex items-center justify-between border-b border-slate-200/80 dark:border-purple-800/50 pb-1.5">
+              <span class="text-[9px] font-bold text-[#0F172A] dark:text-white truncate">Setup - All in one Downloader PRO (by xentrostudios) 1.0</span>
+              <span class="text-[9px] font-mono-code text-slate-400">x</span>
+            </div>
+            <div class="space-y-1">
+              <div class="text-[10px] font-extrabold text-[#0F172A] dark:text-white">Ready to Install</div>
+              <div class="text-[8px] text-[#64748B] dark:text-slate-300 leading-snug">
+                Setup is now ready to begin installing All in one Downloader PRO (by xentrostudios) on your computer. Click Install to continue.
+              </div>
+            </div>
+            <div class="flex items-center justify-end gap-1.5 pt-1">
+              <span class="px-2.5 py-0.5 rounded border border-sky-500 text-[8px] font-bold text-[#0F172A] dark:text-white bg-slate-50 dark:bg-[#131a42]">Install</span>
+              <span class="px-2 py-0.5 rounded border border-slate-300 dark:border-slate-700 text-[8px] font-semibold text-slate-600 dark:text-slate-300">Cancel</span>
+            </div>
+          </div>
+          <div class="floating-pill-card p-4 space-y-1.5 flex-1">
+            <h3 class="text-sm font-extrabold text-[#0F172A] dark:text-white">Run Setup &amp; Install</h3>
+            <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+              Launch the Windows installer wizard and click <strong>Install</strong> to register the extension on your system automatically.
+            </p>
+          </div>
+        </div>
+
+        <!-- Step 3 Visual -->
+        <div class="inner-well-grad p-4 sm:p-5 flex flex-col justify-between gap-4">
+          <div class="flex items-center justify-between">
+            <span class="px-3 py-1 rounded-full bg-white/95 dark:bg-[#0d122e] text-[11px] font-extrabold uppercase tracking-wider text-purple-800 dark:text-purple-300 border border-purple-200/70 dark:border-purple-700/60 shadow-sm">Step 3</span>
+            <span class="w-8 h-8 rounded-xl btn-gradient flex items-center justify-center text-xs font-mono-code font-extrabold">03</span>
+          </div>
+          <div class="floating-pill-card p-3 space-y-1.5 text-left">
+            <div class="flex items-center justify-between text-[8px] font-mono-code text-slate-500 dark:text-slate-400 border-b border-slate-200/70 dark:border-purple-800/50 pb-1">
+              <span>Window &rarr; Extensions</span>
+              <span class="text-[#7701e4] dark:text-[#c084fc] font-bold">Premiere Pro</span>
+            </div>
+            <div class="rounded-lg border border-purple-200/80 dark:border-purple-700/60 bg-purple-50/70 dark:bg-[#131a42] px-2.5 py-1.5 text-[9px] font-extrabold text-[#7701e4] dark:text-white truncate">
+              All in one Downloader (by xentrostudios)
+            </div>
+            <div class="px-2.5 py-0.5 text-[8px] text-slate-500 dark:text-slate-400 truncate">Animation Composer</div>
+          </div>
+          <div class="floating-pill-card p-4 space-y-1.5 flex-1">
+            <h3 class="text-sm font-extrabold text-[#0F172A] dark:text-white">Open in Premiere Pro</h3>
+            <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+              Open Premiere Pro and go to <strong>Window &rarr; Extensions &rarr; All in one Downloader</strong> to launch and dock the panel.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== CHOOSE ACCESS PLAN (SIDE-BY-SIDE COMPARISON + RED X + DOWNLOAD FOR WINDOWS) ==================== -->
+    <section id="pricingSection" class="outer-card p-5 sm:p-8 space-y-6">
+      <div class="text-center max-w-2xl mx-auto space-y-1.5">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+          Plans &amp; Access
+        </span>
+        <h2 class="text-2xl sm:text-3xl font-extrabold text-[#0F172A] dark:text-white tracking-tight">
+          Choose Your Access Plan
+        </h2>
+        <p class="text-xs sm:text-sm text-[#64748B] dark:text-[#CBD5E1] font-medium">
+          Start with the trial on Windows Premiere Pro or unlock full unrestricted access with All in one Downloader PRO.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        <!-- Trial Card -->
+        <div class="inner-well-grad p-6 flex flex-col justify-between gap-6">
+          <div class="space-y-4">
+            <div>
+              <div class="text-sm font-extrabold text-[#0F172A] dark:text-white">Trial Access</div>
+              <div class="text-3xl font-black text-[#7701e4] dark:text-[#c084fc] mt-1">Trial Plan</div>
+              <p class="text-xs text-[#64748B] dark:text-slate-400 mt-1">Test the panel workflow inside Adobe Premiere Pro</p>
+            </div>
+
+            <ul class="space-y-2 text-xs font-semibold text-[#0F172A] dark:text-slate-200">
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Single link fetch, preview &amp; section cut</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Batch queue (up to 10 links)</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Google image search &amp; direct download</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>MP4 / MOV / WAV / MP3 up to 4K (2160p)</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Pause, resume, stop &amp; insert into timeline</span></li>
+              <li class="flex items-center gap-2 text-red-600 dark:text-red-400 font-extrabold pt-0.5">
+                <span class="text-red-600 dark:text-red-400 font-black">&#10007;</span>
+                <span>90 days trail period</span>
+              </li>
+            </ul>
+          </div>
+
+          <button type="button" onclick="triggerPlanAction('Download for Windows (Trial)')" class="w-full py-3 px-4 rounded-xl btn-secondary-glow font-extrabold text-xs cursor-pointer">
+            Download for Windows
+          </button>
+        </div>
+
+        <!-- PRO Card -->
+        <div class="inner-well-alt p-6 flex flex-col justify-between gap-6 ring-2 ring-[#8609fb]/60">
+          <div class="space-y-4">
+            <div class="flex items-center justify-between gap-2">
+              <div>
+                <div class="text-sm font-extrabold text-[#0F172A] dark:text-white">All in one Downloader PRO</div>
+                <div class="text-3xl font-black text-[#7701e4] dark:text-[#c084fc] mt-1">PRO Edition</div>
+                <p class="text-xs text-[#64748B] dark:text-slate-400 mt-1">Unlimited access with no trial timer</p>
+              </div>
+              <span class="px-2.5 py-1 rounded-full btn-gradient text-[10px] font-extrabold uppercase">PRO</span>
+            </div>
+
+            <ul class="space-y-2 text-xs font-semibold text-[#0F172A] dark:text-slate-200">
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Unlimited usage</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Single link fetch, preview &amp; section cut</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Batch queue (up to 10 links)</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Google image search &amp; direct download</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>MP4 / MOV / WAV / MP3 up to 4K (2160p)</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Pause, resume, stop &amp; insert into timeline</span></li>
+              <li class="flex items-center gap-2"><span class="text-emerald-500 font-black">&#10003;</span><span>Future updates for supported Premiere Pro versions</span></li>
+            </ul>
+          </div>
+
+          <button type="button" onclick="triggerPlanAction('Download for Windows (PRO)')" class="w-full py-3 px-4 rounded-xl btn-gradient font-extrabold text-xs cursor-pointer">
+            Download for Windows
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== TUTORIAL VIDEO SECTION ==================== -->
+    <section id="tutorialSection" class="outer-card p-5 sm:p-6 space-y-4">
+      <div>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+          Video Walkthrough
+        </span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-[#0F172A] dark:text-white tracking-tight mt-2">
+          Full Setup &amp; Workflow Tutorial
+        </h2>
+      </div>
+
+      <div class="inner-well-grad p-3 sm:p-4">
+        <div class="floating-pill-card w-full aspect-video flex flex-col items-center justify-center text-center p-6 relative overflow-hidden">
+          <div class="w-16 h-16 rounded-2xl btn-gradient flex items-center justify-center text-white shadow-xl mb-4">
+            <svg class="w-7 h-7 ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M8 5v14l11-7z" />
+            </svg>
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#0F172A] dark:text-white">
+            Tutorial Video Coming Soon
+          </h3>
+          <p class="text-xs sm:text-sm text-[#64748B] dark:text-[#CBD5E1] max-w-md mt-1.5 font-medium">
+            The full step-by-step Premiere Pro walkthrough video will be attached right here shortly.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== FAQ SECTION ==================== -->
+    <section id="faqSection" class="outer-card p-5 sm:p-8 space-y-5">
+      <div>
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+          FAQs
+        </span>
+        <h2 class="text-xl sm:text-2xl font-extrabold text-[#0F172A] dark:text-white tracking-tight mt-2">
+          Frequently Asked Questions
+        </h2>
+      </div>
+
+      <div class="space-y-3">
+        <div class="faq-item floating-pill-card p-4">
+          <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-4 text-left cursor-pointer">
+            <span class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white">How do I download and import media directly into Premiere Pro?</span>
+            <span class="faq-chevron text-[#7701e4] dark:text-[#c084fc] font-black transition-transform duration-200">&#9662;</span>
+          </button>
+          <div class="faq-answer pt-2.5 text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+            Paste a link or search images inside the docked panel, choose your format and resolution, and click download—your media is imported directly into your Premiere Pro project ready to place on your timeline.
+          </div>
+        </div>
+
+        <div class="faq-item floating-pill-card p-4">
+          <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-4 text-left cursor-pointer">
+            <span class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white">Which hosts and video editors are supported?</span>
+            <span class="faq-chevron text-[#7701e4] dark:text-[#c084fc] font-black transition-transform duration-200">&#9662;</span>
+          </button>
+          <div class="faq-answer pt-2.5 text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+            Supported on Adobe Premiere Pro only (Premiere Pro CC 2019–2026+) for downloading media from supported social/video platforms and Google Image Search.
+          </div>
+        </div>
+
+        <div class="faq-item floating-pill-card p-4">
+          <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-4 text-left cursor-pointer">
+            <span class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white">Can I download multiple links at once and trim a specific section?</span>
+            <span class="faq-chevron text-[#7701e4] dark:text-[#c084fc] font-black transition-transform duration-200">&#9662;</span>
+          </button>
+          <div class="faq-answer pt-2.5 text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+            Yes. Queue up to 10 links at once in Batch Queue with pause, resume, and stop controls, or preview a clip inside the panel and set start and end times to trim only the section you need before importing.
+          </div>
+        </div>
+
+        <div class="faq-item floating-pill-card p-4">
+          <button type="button" onclick="toggleFaq(this)" class="w-full flex items-center justify-between gap-4 text-left cursor-pointer">
+            <span class="text-xs sm:text-sm font-extrabold text-[#0F172A] dark:text-white">What formats and resolutions are supported, and do I need to leave Premiere Pro?</span>
+            <span class="faq-chevron text-[#7701e4] dark:text-[#c084fc] font-black transition-transform duration-200">&#9662;</span>
+          </button>
+          <div class="faq-answer pt-2.5 text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+            Supports MP4, MOV, WAV, and MP3 outputs up to 4K (2160p), and everything happens inside Premiere Pro without switching to a browser or leaving your edit.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==================== MORE TOOLS ==================== -->
+    <section class="outer-card p-5 sm:p-6 space-y-5">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+        <div>
+          <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] text-[11px] font-extrabold uppercase tracking-wider text-[#7701e4] dark:text-purple-300 border border-purple-200/80 dark:border-purple-700/60">
+            Xentro Ecosystem
+          </span>
+          <h2 class="text-xl sm:text-2xl font-extrabold text-[#0F172A] dark:text-white tracking-tight mt-2">
+            Explore More Xentro Tools
+          </h2>
+        </div>
+        <a href="https://xentro-tools.vercel.app/" target="_blank" rel="noopener noreferrer" class="text-xs font-extrabold text-[#7701e4] dark:text-[#c084fc] hover:underline">
+          View All Web Tools &rarr;
+        </a>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
+        <div class="inner-well-grad p-4 flex flex-col justify-between gap-4">
+          <div class="space-y-3.5">
+            <div class="floating-pill-card h-44 p-3.5 flex flex-col justify-between relative overflow-hidden">
+              <div class="flex items-center justify-between text-[10px] font-bold">
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60">WebGL Canvas</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60">4K Alpha</span>
+              </div>
+              <div class="flex items-center justify-center my-auto">
+                <div class="px-7 py-3.5 rounded-2xl btn-gradient font-black text-xl tracking-tight text-white shadow-xl transform -rotate-3">3D</div>
+              </div>
+              <div class="flex items-center justify-between text-[10px] font-mono-code font-bold text-[#7701e4] dark:text-[#c084fc]">
+                <span>Extrude: 45px</span>
+                <span>Bevel: Round</span>
+              </div>
+            </div>
+            <div class="space-y-1.5 px-1">
+              <h3 class="text-base font-extrabold text-[#0F172A] dark:text-white">3D Title &amp; Text Studio</h3>
+              <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+                Create 3D vector titles, customize extrusion depth and lighting, and export transparent alpha animations directly in browser.
+              </p>
+            </div>
+          </div>
+          <a href="https://xentro-tools.vercel.app/title-studio" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl btn-gradient text-center font-bold text-xs flex items-center justify-center gap-1.5">
+            <span>Launch Tool &rarr;</span>
+          </a>
+        </div>
+
+        <div class="inner-well-alt p-4 flex flex-col justify-between gap-4">
+          <div class="space-y-3.5">
+            <div class="floating-pill-card h-44 p-3.5 flex flex-col justify-between relative overflow-hidden">
+              <div class="flex items-center justify-between gap-1.5 text-[9px] font-mono-code font-bold">
+                <span class="px-2.5 py-1 rounded-lg bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60 leading-tight">
+                  cubic-bezier(0.25, 1,<br />0.5, 1)
+                </span>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60">easeOutQuart</span>
+              </div>
+              <div class="flex items-center justify-center my-auto px-2">
+                <svg class="w-full h-16 overflow-visible" viewBox="0 0 220 64" fill="none">
+                  <line x1="18" y1="54" x2="72" y2="12" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="3 3" />
+                  <line x1="202" y1="12" x2="112" y2="12" stroke="#c084fc" stroke-width="1.5" stroke-dasharray="3 3" />
+                  <path d="M 18 54 C 72 12, 112 12, 202 12" stroke="#8609fb" stroke-width="3.5" stroke-linecap="round" />
+                  <circle cx="18" cy="54" r="4.5" fill="#7701e4" />
+                  <circle cx="72" cy="12" r="4.5" fill="#c084fc" stroke="#ffffff" stroke-width="1.5" />
+                  <circle cx="112" cy="12" r="4.5" fill="#8609fb" stroke="#ffffff" stroke-width="1.5" />
+                  <circle cx="202" cy="12" r="4.5" fill="#7701e4" />
+                </svg>
+              </div>
+              <div class="flex justify-center">
+                <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-50 dark:bg-[#131a42] border border-purple-200/80 dark:border-purple-700/60 text-[10px] font-extrabold text-[#0F172A] dark:text-white shadow-sm">
+                  <span class="w-3.5 h-3.5 rounded-full bg-[#7701e4] text-white text-[8px] flex items-center justify-center">&#9889;</span>
+                  Bezier Curve Studio
+                </span>
+              </div>
+            </div>
+            <div class="space-y-1.5 px-1">
+              <h3 class="text-base font-extrabold text-[#0F172A] dark:text-white">Motion Curve &amp; Easing</h3>
+              <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+                Visually craft cubic-bezier speed curves, preview acceleration live, and copy ready-to-paste keyframe values for After Effects.
+              </p>
+            </div>
+          </div>
+          <a href="https://xentro-tools.vercel.app/easing-curve-studio" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl btn-gradient text-center font-bold text-xs flex items-center justify-center gap-1.5">
+            <span>Launch Tool &rarr;</span>
+          </a>
+        </div>
+
+        <div class="inner-well-grad p-4 flex flex-col justify-between gap-4">
+          <div class="space-y-3.5">
+            <div class="floating-pill-card h-44 p-3.5 flex flex-col justify-between relative overflow-hidden">
+              <div class="flex items-center justify-between text-[10px] font-bold">
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60">9:16 Vertical</span>
+                <span class="px-2.5 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] text-[#7701e4] dark:text-[#c084fc] border border-purple-200/80 dark:border-purple-700/60">Reels &amp; Shorts</span>
+              </div>
+              <div class="mx-auto w-28 rounded-xl border-2 border-dashed border-[#8609fb] p-1.5 flex flex-col justify-between gap-1 bg-purple-50/40 dark:bg-[#131a42]/40">
+                <div class="flex justify-between text-[7px] font-mono-code font-bold text-[#7701e4] dark:text-[#c084fc]">
+                  <span>Header UI</span>
+                  <span>1080px</span>
+                </div>
+                <div class="py-1 px-1.5 rounded-md bg-purple-100/90 dark:bg-[#131a42] text-center text-[8px] font-extrabold text-[#7701e4] dark:text-[#c084fc]">
+                  &bull; 100% Safe Zone
+                </div>
+                <div class="flex justify-between text-[7px] font-mono-code font-bold text-[#7701e4] dark:text-[#c084fc]">
+                  <span>Captions</span>
+                  <span>1920px</span>
+                </div>
+              </div>
+              <div class="flex justify-center">
+                <span class="px-3 py-0.5 rounded-full bg-purple-50 dark:bg-[#131a42] border border-purple-200/80 dark:border-purple-700/60 text-[10px] font-extrabold text-[#0F172A] dark:text-white">
+                  Zero Cropped Elements
+                </span>
+              </div>
+            </div>
+            <div class="space-y-1.5 px-1">
+              <h3 class="text-base font-extrabold text-[#0F172A] dark:text-white">Social Safe Zone Overlay</h3>
+              <p class="text-xs text-[#64748B] dark:text-[#CBD5E1] leading-relaxed">
+                Ensure your titles, lower thirds, and captions never get hidden under TikTok, Instagram Reels, or YouTube Shorts interface buttons.
+              </p>
+            </div>
+          </div>
+          <a href="https://xentro-tools.vercel.app/safe-zone" target="_blank" rel="noopener noreferrer" class="w-full py-3 px-4 rounded-xl btn-gradient text-center font-bold text-xs flex items-center justify-center gap-1.5">
+            <span>Launch Tool &rarr;</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer class="xs-container max-w-6xl w-full mx-auto px-4 pb-8">
+    <div class="outer-card p-5 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3.5">
+        <div class="w-10 h-10 rounded-[14px] bg-[#7701e4] flex items-center justify-center text-white font-extrabold text-lg shadow-md shadow-purple-500/20 shrink-0">
+          X
+        </div>
+        <div>
+          <h4 class="text-xs font-extrabold text-[#0F172A] dark:text-white">Xentro Editor Council</h4>
+          <p class="text-[11px] text-[#64748B] dark:text-slate-400 font-medium">Join 500+ video editors sharing motion presets, project critiques, and freelance tips.</p>
+        </div>
+      </div>
+
+      <a href="https://chat.whatsapp.com/JRh8GHhmmwk9DzIK13NjHy" target="_blank" rel="noopener noreferrer" class="whitespace-nowrap px-5 py-2.5 btn-gradient text-white font-bold text-xs rounded-xl shadow-md transition text-center shrink-0">
+        Join Free Community &rarr;
+      </a>
+    </div>
+  </footer>
+
+  <!-- Toast Notification Pill -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none flex items-center gap-2.5 bg-white/95 dark:bg-[#0d122e] backdrop-blur-md border border-purple-100 dark:border-purple-700/60 text-[#0F172A] dark:text-white text-xs font-bold px-4 py-3 rounded-2xl shadow-xl">
+    <span class="w-2.5 h-2.5 rounded-full bg-[#8609fb]"></span>
+    <span id="toastMsg">Action complete</span>
+  </div>
+
+  <script>
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      try {
+        localStorage.setItem('xentro_theme', isDark ? 'dark' : 'light');
+      } catch (e) {}
+      showToast(isDark ? 'Dark theme enabled' : 'Light theme enabled');
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      if (!toast || !toastMsg) return;
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-20', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      clearTimeout(window._xsToastTimer);
+      window._xsToastTimer = setTimeout(() => {
+        toast.classList.remove('translate-y-0', 'opacity-100');
+        toast.classList.add('translate-y-20', 'opacity-0');
+      }, 2400);
+    }
+
+    function scrollToPricingSection() {
+      const target = document.getElementById('pricingSection');
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        showToast('Scrolled to plans below');
+      }
+    }
+
+    function triggerPlanAction(planName) {
+      showToast(`${planName} selected — attach your installer or checkout link to triggerPlanAction()`);
+    }
+
+    function simulatePanelDemoPlay() {
+      const statusEl = document.getElementById('panelDemoStatusText');
+      if (statusEl) {
+        statusEl.textContent = 'Downloading... Ready for Timeline Insert';
+      }
+      showToast('Panel preview started');
+    }
+
+    function toggleFaq(btn) {
+      const item = btn.closest('.faq-item');
+      if (item) {
+        item.classList.toggle('open');
+      }
+    }
+
+    const slideTitles = [
+      '1. Video & Audio — Single Link + Trimmer',
+      '2. Clip Preview & Section Trimmer (00:00:00 – 00:11:16)',
+      '3. Live Panel Preview & Scrubber (00:02:35 / 00:11:16)',
+      '4. Batch Queue (10 Max) & Direct Timeline Import',
+      '5. Image Search & Multi-Resolution Grid (1200x900 • JPG)'
+    ];
+
+    let currentSlideIndex = 0;
+    let carouselPausedByHover = false;
+    let carouselTimer = null;
+
+    function updateCarouselUI() {
+      const slides = document.querySelectorAll('.carousel-slide');
+      const dots = document.querySelectorAll('.carousel-dot');
+      const counter = document.getElementById('carouselCounterBadge');
+      const caption = document.getElementById('carouselCaption');
+
+      slides.forEach((slide, idx) => {
+        slide.classList.toggle('active', idx === currentSlideIndex);
+      });
+
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlideIndex) {
+          dot.classList.remove('w-2', 'bg-purple-300/60', 'dark:bg-purple-800/80');
+          dot.classList.add('w-6', 'bg-[#7701e4]');
+        } else {
+          dot.classList.remove('w-6', 'bg-[#7701e4]');
+          dot.classList.add('w-2', 'bg-purple-300/60', 'dark:bg-purple-800/80');
+        }
+      });
+
+      if (counter) {
+        counter.textContent = `0${currentSlideIndex + 1} / 0${slides.length}`;
+      }
+      if (caption && slideTitles[currentSlideIndex]) {
+        caption.textContent = slideTitles[currentSlideIndex];
+      }
+    }
+
+    function nextCarouselSlide() {
+      currentSlideIndex = (currentSlideIndex + 1) % slideTitles.length;
+      updateCarouselUI();
+    }
+
+    function prevCarouselSlide() {
+      currentSlideIndex = (currentSlideIndex - 1 + slideTitles.length) % slideTitles.length;
+      updateCarouselUI();
+    }
+
+    function goToCarouselSlide(idx) {
+      currentSlideIndex = idx;
+      updateCarouselUI();
+      startCarouselTimer();
+    }
+
+    function startCarouselTimer() {
+      clearInterval(carouselTimer);
+      carouselTimer = setInterval(() => {
+        if (!carouselPausedByHover) {
+          nextCarouselSlide();
+        }
+      }, 4200);
+    }
+
+    function pauseCarouselAuto() {
+      carouselPausedByHover = true;
+    }
+
+    function resumeCarouselAuto() {
+      carouselPausedByHover = false;
+    }
+
+    updateCarouselUI();
+    startCarouselTimer();
+  </script>
+</body>
+</html>
